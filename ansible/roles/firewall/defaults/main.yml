@@ -1,0 +1,8 @@
+---
+firewall_package: firewalld
+
+firewall_service: firewalld
+
+allowed_ports:
+  - 22/tcp
+  - 443/tcp

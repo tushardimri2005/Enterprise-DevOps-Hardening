@@ -1,0 +1,40 @@
+---
+- name: Install firewall package
+  package:
+    name: "{{ firewall_package }}"
+    state: present
+
+- name: Enable firewalld
+  service:
+    name: "{{ firewall_service }}"
+    enabled: true
+
+- name: Start firewalld
+  service:
+    name: "{{ firewall_service }}"
+    state: started
+
+- name: Verify firewalld service
+  command: systemctl is-active {{ firewall_service }}
+  register: firewall_service_status
+  changed_when: false
+
+- name: Open required ports
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: enabled
+    immediate: true
+  loop: "{{ allowed_ports }}"
+  notify: reload firewalld
+
+- name: Get firewall status
+  command: firewall-cmd --list-ports
+  register: firewall_ports
+  changed_when: false
+
+- name: Display firewall status
+  debug:
+    msg:
+      - "Firewall Status: {{ firewall_service_status.stdout }}"
+      - "Allowed Ports: {{ firewall_ports.stdout }}"
