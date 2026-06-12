@@ -1,0 +1,60 @@
+---
+- name: Check root login status
+  shell: grep "^PermitRootLogin no" /etc/ssh/sshd_config
+  register: root_login_check
+  failed_when: false
+  changed_when: false
+
+- name: Check password authentication status
+  shell: grep "^PasswordAuthentication no" /etc/ssh/sshd_config
+  register: password_auth_check
+  failed_when: false
+  changed_when: false
+
+- name: Check SSH timeout
+  shell: grep "^ClientAliveInterval 300" /etc/ssh/sshd_config
+  register: ssh_timeout_check
+  failed_when: false
+  changed_when: false
+
+- name: Check auditd service
+  command: systemctl is-active auditd
+  register: auditd_check
+  failed_when: false
+  changed_when: false
+
+- name: Check firewalld service
+  command: systemctl is-active firewalld
+  register: firewall_check
+  failed_when: false
+  changed_when: false
+
+- name: Check firewall ports
+  command: firewall-cmd --list-ports
+  register: firewall_ports_check
+  failed_when: false
+  changed_when: false
+
+- name: Verify HTTPS port open
+  shell: firewall-cmd --list-ports | grep "443/tcp"
+  register: https_port_check
+  failed_when: false
+  changed_when: false
+
+- name: Verify SSH port open
+  shell: firewall-cmd --list-ports | grep "22/tcp"
+  register: ssh_port_check
+  failed_when: false
+  changed_when: false
+
+- name: Display compliance results
+  debug:
+    msg:
+      - "Root Login Disabled: {{ 'PASS' if root_login_check.rc == 0 else 'FAIL' }}"
+      - "Password Authentication Disabled: {{ 'PASS' if password_auth_check.rc == 0 else 'FAIL' }}"
+      - "SSH Timeout Configured: {{ 'PASS' if ssh_timeout_check.rc == 0 else 'FAIL' }}"
+      - "Auditd Running: {{ 'PASS' if auditd_check.stdout == 'active' else 'FAIL' }}"
+      - "Firewalld Running: {{ 'PASS' if firewall_check.stdout == 'active' else 'FAIL' }}"
+      - "Open Ports: {{ firewall_ports_check.stdout }}"
+      - "SSH Port Open: {{ 'PASS' if ssh_port_check.rc == 0 else 'FAIL' }}"
+      - "HTTPS Port Open: {{ 'PASS' if https_port_check.rc == 0 else 'FAIL' }}"
