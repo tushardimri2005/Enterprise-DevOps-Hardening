@@ -1,0 +1,7 @@
+---
+- name: System Hardening and Compliance
+  hosts: linux
+  become: true
+
+  roles:
+    - ssh_hardening
