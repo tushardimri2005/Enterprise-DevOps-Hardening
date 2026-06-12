@@ -1,0 +1,24 @@
+---
+- name: Install audit package
+  package:
+    name: "{{ auditd_package }}"
+    state: present
+
+- name: Enable auditd service
+  service:
+    name: "{{ auditd_service }}"
+    enabled: true
+
+- name: Start auditd service
+  service:
+    name: "{{ auditd_service }}"
+    state: started
+
+- name: Verify auditd service
+  command: systemctl is-active {{ auditd_service }}
+  register: auditd_status
+  changed_when: false
+
+- name: Display auditd status
+  debug:
+    msg: "auditd status: {{ auditd_status.stdout }}"

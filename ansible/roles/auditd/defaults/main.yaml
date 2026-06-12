@@ -1,0 +1,4 @@
+---
+auditd_package: audit
+
+auditd_service: auditd

@@ -1,15 +1,37 @@
-variable "ami" {}
+variable "ami" {
+  type = string
+}
 
-variable "instance_type" {}
+variable "instance_type" {
+  type = string
+}
 
-variable "public_subnet_id" {}
+variable "public_subnet_id" {
+  type = string
+}
 
-variable "security_group_id" {}
+variable "security_group_id" {
+  type = string
+}
 
-variable "key_name" {}
+variable "key_name" {
+  type = string
+}
 
-variable "project_name" {}
+variable "project_name" {
+  type = string
+}
 
-variable "environment" {}
+variable "environment" {
+  type = string
+}
 
-variable "common_tags" {}
+variable "common_tags" {
+  type = map(string)
+}
+
+variable "user_data" {
+  type        = string
+  description = "Bastion bootstrap script"
+  default     = null
+}

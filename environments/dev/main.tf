@@ -72,6 +72,13 @@ module "bastion" {
 
   key_name = var.key_name
 
+  user_data = templatefile(
+    "${path.module}/templates/bastion-userdata.tpl",
+    {
+      environment = var.environment
+    }
+  )
+
   project_name = var.project_name
 
   environment = var.environment

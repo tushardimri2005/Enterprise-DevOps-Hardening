@@ -13,6 +13,8 @@ resource "aws_instance" "bastion" {
 
   key_name = var.key_name
 
+  user_data = var.user_data
+
   tags = merge(
     var.common_tags,
     {

@@ -5,3 +5,7 @@
 
   roles:
     - ssh_hardening
+    - auditd
+    - firewall
+    - compliance_check
+    - reporting

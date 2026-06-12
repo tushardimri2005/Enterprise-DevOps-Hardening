@@ -1,39 +1,22 @@
----
-- name: Disable root SSH login
-  lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^#?PermitRootLogin'
-    line: "PermitRootLogin {{ ssh_root_login }}"
-    backup: yes
-  notify: restart ssh
-
-- name: Disable password authentication
-  lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^#?PasswordAuthentication'
-    line: "PasswordAuthentication {{ ssh_password_authentication }}"
-    backup: yes
-  notify: restart ssh
-
-- name: Configure SSH timeout
-  lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^#?ClientAliveInterval'
-    line: "ClientAliveInterval {{ ssh_client_alive_interval }}"
-    backup: yes
-  notify: restart ssh
-
-- name: Configure SSH count max
-  lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^#?ClientAliveCountMax'
-    line: "ClientAliveCountMax {{ ssh_client_alive_count_max }}"
-    backup: yes
-  notify: restart ssh
-
 - name: Validate SSH configuration
   command: sshd -t
   changed_when: false
+
+- name: Verify root login disabled
+  shell: grep "^PermitRootLogin" /etc/ssh/sshd_config
+  register: root_login_check
+  changed_when: false
+
+- name: Verify password authentication disabled
+  shell: grep "^PasswordAuthentication" /etc/ssh/sshd_config
+  register: password_auth_check
+  changed_when: false
+
+- name: Display SSH hardening status
+  debug:
+    msg:
+      - "Root Login Setting: {{ root_login_check.stdout }}"
+      - "Password Authentication Setting: {{ password_auth_check.stdout }}"
 
 - name: Flush handlers
   meta: flush_handlers

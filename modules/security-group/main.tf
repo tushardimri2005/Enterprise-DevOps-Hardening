@@ -31,22 +31,22 @@ resource "aws_vpc_security_group_ingress_rule" "private_ssh" {
 
 resource "aws_vpc_security_group_ingress_rule" "private_https" {
   security_group_id = aws_security_group.private_ec2_sg.id
-  cidr_ipv4 = "0.0.0.0/0"
-  from_port = 443
-  to_port = 443
-  ip_protocol = "tcp"
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "tcp"
 }
 
 # Outbound
 
 resource "aws_vpc_security_group_egress_rule" "private_outbound" {
   security_group_id = aws_security_group.private_ec2_sg.id
-  cidr_ipv4 = "0.0.0.0/0"
-  ip_protocol = "-1"
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1"
 }
 resource "aws_security_group" "bastion_sg" {
 
-  name        = "${var.project_name}-${var.environment}-bastion-sg"
+  name = "${var.project_name}-${var.environment}-bastion-sg"
 
   description = "Security Group for Bastion Host"
 
